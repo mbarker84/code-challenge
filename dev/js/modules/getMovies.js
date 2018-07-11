@@ -29,6 +29,8 @@ const requestFunction = (url, index) => {
       const dataObject = request.response;
 
       if (index === 0) {
+        // get array of available genres and create filter component
+        getGenresArray(dataObject.results);
         // for the first request in the array, populate the page
         populatePage(dataObject);
       } else if (index === 1) {
@@ -56,6 +58,19 @@ requestsArray.forEach((item, index) => {
   requestFunction(item, index);
 });
 
+// Map over the list of genres
+const getGenresArray = (items) => {
+  items.map((el) => {
+    // Map over the array of genre IDs for each movie and add them to the genres array, removing duplicates. This will be the array we use to create the filter component.
+    el.genre_ids.map((i) => {
+      if (genresArray.includes(i)) {
+      } else {
+        genresArray.push(i);
+      }
+    });
+  });
+};
+
 const populatePage = (obj) => {
   // Return the array of results
   const $items = obj.results;
@@ -63,10 +78,7 @@ const populatePage = (obj) => {
   // Remove content if the $container has content from a previous query
   $container.innerHTML = '';
 
-  $items.map((el) => {
-    genresArray.push([...el.genre_ids]);
-    console.log([...el.genre_ids]);
-  });
+  // getGenresArray($items);
   console.log(genresArray);
 
   if ($items.length > 0) {
