@@ -1,10 +1,10 @@
 //==============================================
 // Modules Manifest
-//============================================== 
+//==============================================
 
 // Module Rules
 //
-// Module is a more discrete component of the page. 
+// Module is a more discrete component of the page.
 // It is your navigation bars and your carousels and your dialogs and your widgets, buttons and so on.
 // Each Module should be designed to exist as a standalone component.
 //
@@ -21,10 +21,11 @@
 @import 'helpers';
 @import 'buttons';
 @import 'input';
-@import 'hamburger';
-@import 'nav';
-@import 'logo';
-@import 'article';
-@import 'modules';
-@import 'cookies';
-@import 'breadcrumb';
+// @import 'hamburger';
+// @import 'nav';
+// @import 'logo';
+// @import 'article';
+// @import 'modules';
+// @import 'cookies';
+// @import 'breadcrumb';
+@import 'filter';

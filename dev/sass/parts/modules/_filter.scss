@@ -1,0 +1,13 @@
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.filter__input-group {
+  margin-right: 20px;
+  margin-bottom: 10px;
+
+  label {
+    margin-left: 5px;
+  }
+}
