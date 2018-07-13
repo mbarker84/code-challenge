@@ -2,6 +2,8 @@ require('./helpers');
 
 const $container = document.querySelector('[data-container]');
 const $filterWrapper = document.querySelector('[data-filter]');
+const $ratingInput = document.querySelector('[data-rating]');
+const $currRating = document.querySelector('[data-current-rating]');
 const apiKey = 'ef3830b0bf3e47ea40628844dfe93dfb';
 
 // Get the JSON data
@@ -17,12 +19,11 @@ const genresArray = [];
 // Create a new variable to which we’ll assign the results of the API query. This will be a list of all available movies.
 let allMovies;
 
+// Get the current value of the rating input
+let currentMinRating;
+
 // The results currently showing at any one time.
 const visibleItems = [];
-
-// Create a variable for the available genres, to be defined in the `listFilters()` function. We want this to be accessible to other functions (hence using `let`)
-// const availableFilters = [];
-// let inputsArray = [];
 
 // Map over the list of genres
 const getGenresArray = (items) => {
@@ -38,21 +39,36 @@ const getGenresArray = (items) => {
 
 // Function to populate the page with a list of results of the query
 const populatePage = (obj) => {
-  // Assign the array of results to a variable
-  const $items = obj;
+  // Get the current rating input value and show the value
+  currentMinRating = parseFloat($ratingInput.value);
+  const ratingValue = Number(currentMinRating.toFixed(1));
+  $currRating.innerHTML = `${currentMinRating}`;
+
+  // Sort by popularity and assign the array of results to a variable
+  const $items = obj.sort((a, b) => a.popularity - b.popularity).reverse();
+
+  // Create a new array for items over the current rating value
+  const $ratedItems = [];
+
+  // Any items with rating higher than or equal to current rating input value, push into the array
+  $items.map((el) => {
+    if (el.vote_average >= ratingValue) {
+      $ratedItems.push(el);
+    }
+  });
 
   // Remove content if the $container has content from a previous query
   $container.innerHTML = '';
 
-  if ($items.length > 0) {
+  if ($ratedItems.length > 0) {
     // Loop over the data array and create a list item for each movie as HTML string
-    const listItems = $items
-      .map(el =>
-        `<li>
-        <h2>${el.title}</h2>
-        <p>${el.vote_average}</p>
-        <p>${el.overview}</p>
-      </li>`)
+    const listItems = $ratedItems
+      .map(el => `<li>
+            <h2>${el.title}</h2>
+            <p>${el.vote_average}</p>
+            <p>${el.popularity}</p>
+            <p>${el.overview}</p>
+          </li>`)
       .join('');
 
     // Create a new <ul></ul> and insert the items HTML
@@ -63,7 +79,8 @@ const populatePage = (obj) => {
   }
 };
 
-// This function gets a list of all genres names and ids from the genres query and cross-references it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component.
+/* This function gets a list of all genres names and ids from the genres query and cross-references
+it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component. */
 const listGenres = (obj) => {
   // Assign the array of genre IDs to a variable
   const $genres = obj.genres;
@@ -98,9 +115,12 @@ const genresclickHandle = (e) => {
     }
   });
 
-  console.log(visibleItems);
-
-  populatePage(visibleItems);
+  // If any filters are selected show those items, otherwise show all movies
+  if (visibleItems.length > 0) {
+    populatePage(visibleItems);
+  } else {
+    populatePage(allMovies);
+  }
 };
 
 // Because our inputs are being created dynamically we have to delegate events to the parent
@@ -134,17 +154,6 @@ const requestFunction = (url, index) => {
   };
   request.send();
 };
-
-// Wait for the response to return, then populate the page
-// request.onload = () => {
-//   const dataObject = request.response;
-
-//   if (index === 1) {
-//     populatePage(dataObject);
-//   } else if (index === 2) {
-//     console.log('hello');
-//   }
-// };
 
 // Loop over the array, execute function
 requestsArray.forEach((item, index) => {
