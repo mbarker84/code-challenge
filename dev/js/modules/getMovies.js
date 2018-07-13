@@ -87,16 +87,14 @@ const genresclickHandle = (e) => {
   // Get the genre ID from the data-attribute, convert it to a number
   const genreId = parseInt(e.target.dataset.id);
 
-  console.log(genreId);
-
   // Check if any of the movies have a matching genre ID
   allMovies.map((el) => {
-    if (e.target.checked && el.genre_ids.includes(genreId)) {
-      // If the input is checked, add them to the visibleItems array
+    if (e.target.checked && el.genre_ids.includes(genreId) && !visibleItems.includes(el)) {
+      // If the input is checked, and the visibleItems array doesn’t already include the item, add them to the array
       visibleItems.push(el);
-    } else if (!e.target.checked && el.genre_ids.includes(genreId)) {
+    } else if (!e.target.checked && el.genre_ids.includes(genreId) && visibleItems.includes(el)) {
       // In the input is not checked, remove items of this genre
-      // visibleItems.splice();
+      visibleItems.splice(visibleItems.indexOf(el), 1);
     }
   });
 
