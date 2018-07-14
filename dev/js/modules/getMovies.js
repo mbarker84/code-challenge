@@ -26,7 +26,7 @@ let allMovies;
 let currentMinRating;
 
 // The results currently showing at any one time.
-const visibleItems = [];
+let visibleItems = [];
 
 // Map over the list of genres
 const getGenresArray = (items) => {
@@ -117,7 +117,7 @@ const getSelectedInputs = () => {
   });
 };
 
-const arrayContainsArray = (array1, array2) => array2.every(n => array1.indexOf(n) >= 0);
+// const arrayContainsArray = (array1, array2) => array2.every(n => array1.indexOf(n) >= 0);
 
 // The clickHandle for filter inputs
 const genresclickHandle = (e) => {
@@ -139,6 +139,7 @@ const genresclickHandle = (e) => {
   // });
   // const allMovieGenreIds = allMovies.map(el => el.genre_ids);
   // console.log(allMovieGenreIds);
+  visibleItems = [];
 
   allMovies.map((el) => {
     // $selectedGenres.map((i) => {
@@ -148,12 +149,11 @@ const genresclickHandle = (e) => {
     //     // visibleItems.splice(visibleItems.indexOf(el), 1);
     //   }
     // });
+
     const isSelected = i => el.genre_ids.includes(i);
-    console.log(el.genre_ids);
+    console.log($selectedGenres.every(isSelected), el);
     if ($selectedGenres.every(isSelected)) {
       visibleItems.push(el);
-    } else if (visibleItems.includes(el)) {
-      visibleItems.splice(visibleItems.indexOf(el));
     }
   });
 
