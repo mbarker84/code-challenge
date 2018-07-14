@@ -16,6 +16,9 @@ const requestsArray = [requestUrl, genresUrl];
 // Create new empty array for movie genres
 const genresArray = [];
 
+// Array for selected genres
+const $selectedGenres = [];
+
 // Create a new variable to which we’ll assign the results of the API query. This will be a list of all available movies.
 let allMovies;
 
@@ -99,21 +102,57 @@ const listGenres = (obj) => {
   $filterWrapper.innerHTML = `${filterItems.join('')}`;
 };
 
+const getSelectedInputs = () => {
+  // Only get this when clicked, as these elements are dynamically created
+  const inputsArray = [...document.querySelectorAll('[data-input]')];
+
+  inputsArray.map((el) => {
+    const _genreId = parseInt(el.dataset.id);
+
+    if (el.checked && !$selectedGenres.includes(_genreId)) {
+      return $selectedGenres.push(_genreId);
+    } else if (!el.checked && $selectedGenres.includes(_genreId)) {
+      $selectedGenres.splice($selectedGenres.indexOf(el), 1);
+    }
+  });
+};
+
+const arrayContainsArray = (array1, array2) => array2.every(n => array1.indexOf(n) >= 0);
+
 // The clickHandle for filter inputs
 const genresclickHandle = (e) => {
   // Get the genre ID from the data-attribute, convert it to a number
-  const genreId = parseInt(e.target.dataset.id);
+  // const genreId = parseInt(e.target.dataset.id);
+
+  getSelectedInputs();
+  console.log($selectedGenres);
 
   // Check if any of the movies have a matching genre ID
+  // allMovies.map((el) => {
+  //   if (e.target.checked && el.genre_ids.includes(genreId) && !visibleItems.includes(el)) {
+  //     // If the input is checked, and the visibleItems array doesn’t already include the item, add them to the array
+  //     visibleItems.push(el);
+  //   } else if (!e.target.checked && el.genre_ids.includes(genreId) && visibleItems.includes(el)) {
+  //     // In the input is not checked, remove items of this genre
+  //     visibleItems.splice(visibleItems.indexOf(el), 1);
+  //   }
+  // });
+  const allMovieGenreIds = allMovies.map(el => el.genre_ids);
+  // console.log(allMovieGenreIds);
+
+  const isSelected = i => $selectedGenres.includes(i);
+
   allMovies.map((el) => {
-    if (e.target.checked && el.genre_ids.includes(genreId) && !visibleItems.includes(el)) {
-      // If the input is checked, and the visibleItems array doesn’t already include the item, add them to the array
-      visibleItems.push(el);
-    } else if (!e.target.checked && el.genre_ids.includes(genreId) && visibleItems.includes(el)) {
-      // In the input is not checked, remove items of this genre
-      visibleItems.splice(visibleItems.indexOf(el), 1);
-    }
+    $selectedGenres.map((i) => {
+      if (el.genre_ids.includes(i)) {
+        visibleItems.push(el);
+      } else {
+        // visibleItems.splice(visibleItems.indexOf(el), 1);
+      }
+    });
   });
+
+  console.log(visibleItems);
 
   // If any filters are selected show those items, otherwise show all movies
   if (visibleItems.length > 0) {
