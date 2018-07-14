@@ -13,7 +13,7 @@ const genresUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKe
 // Create an array of the requests so we can execute them in turn
 const requestsArray = [requestUrl, genresUrl];
 
-// Create new empty array for movie genres
+// Create new empty array for movie genres [2]
 const genresArray = [];
 
 // Array for selected genres
@@ -28,6 +28,32 @@ let currentMinRating;
 // The results currently showing at any one time.
 let visibleItems = [];
 
+// Variable to test if any items are checked [1]
+let itemsChecked;
+
+// Make array of all available genres available globally
+let $genres;
+
+/* This function gets a list of all genres names and ids from the genres query and cross-references
+it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component. */
+const listGenres = (obj) => {
+  // Assign the array of genre IDs to a variable
+  $genres = obj.genres;
+
+  // Map over the array of genres IDs. If the genre ID matches any of the movies returned by the request, create a corresponding <input> to add to the filter component
+  const filterItems = $genres.map((el) => {
+    if (genresArray.includes(el.id)) {
+      return `<div class="filter__input-group">
+      <input type="checkbox" data-id="${el.id}" name="genre" data-input>
+      <label for="${el.id}"></label>${el.name}</label>
+      </div>`;
+    }
+  });
+
+  // Insert them into the page
+  $filterWrapper.innerHTML = `${filterItems.join('')}`;
+};
+
 // Map over the list of genres
 const getGenresArray = (items) => {
   items.map((el) => {
@@ -40,6 +66,8 @@ const getGenresArray = (items) => {
   });
 };
 
+let $ratedItems;
+
 // Function to populate the page with a list of results of the query
 const populatePage = (obj) => {
   // Get the current rating input value and show the value
@@ -51,7 +79,7 @@ const populatePage = (obj) => {
   const $items = obj.sort((a, b) => a.popularity - b.popularity).reverse();
 
   // Create a new array for items over the current rating value
-  const $ratedItems = [];
+  $ratedItems = [];
 
   // Any items with rating higher than or equal to current rating input value, push into the array
   $items.map((el) => {
@@ -77,90 +105,54 @@ const populatePage = (obj) => {
     // Create a new <ul></ul> and insert the items HTML
     $container.innerHTML = `<ul>${listItems}</ul>`;
   } else {
-    // If no results match the filter then display a message. TBH this probably isn’t needed, as all filters *should* show some results.
+    // If no results match the filter then display a message.
     $container.innerHTML = '<p>Sorry, no results found</p>';
   }
-};
-
-/* This function gets a list of all genres names and ids from the genres query and cross-references
-it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component. */
-const listGenres = (obj) => {
-  // Assign the array of genre IDs to a variable
-  const $genres = obj.genres;
-
-  // Map over the array of genres IDs. If the genre ID matches any of the movies returned by the request, create a corresponding <input> to add to the filter component
-  const filterItems = $genres.map((el) => {
-    if (genresArray.includes(el.id)) {
-      return `<div class="filter__input-group">
-      <input type="checkbox" data-id="${el.id}" name="genre" data-input>
-      <label for="${el.id}"></label>${el.name}</label>
-      </div>`;
-    }
-  });
-
-  // Insert them into the page
-  $filterWrapper.innerHTML = `${filterItems.join('')}`;
 };
 
 const getSelectedInputs = () => {
   // Only get this when clicked, as these elements are dynamically created
   const inputsArray = [...document.querySelectorAll('[data-input]')];
 
-  inputsArray.map((el) => {
-    const _genreId = parseInt(el.dataset.id);
+  // Set variable to false by default [1]
+  itemsChecked = false;
 
-    if (el.checked && !$selectedGenres.includes(_genreId)) {
-      return $selectedGenres.push(_genreId);
-    } else if (!el.checked && $selectedGenres.includes(_genreId)) {
+  inputsArray.map((el) => {
+    const genreId = parseInt(el.dataset.id);
+
+    // [1] If any input is checked, set to true
+    if (el.checked) {
+      itemsChecked = true;
+    }
+
+    /* If an input is checked and $selectedGenres array doesn’t already include it, push it to the array.
+    Otherwise, if not checked remove it from the array if necessary. */
+    if (el.checked && !$selectedGenres.includes(genreId)) {
+      return $selectedGenres.push(genreId);
+    } else if (!el.checked && $selectedGenres.includes(genreId)) {
       $selectedGenres.splice($selectedGenres.indexOf(el), 1);
     }
   });
 };
 
-// const arrayContainsArray = (array1, array2) => array2.every(n => array1.indexOf(n) >= 0);
-
 // The clickHandle for filter inputs
 const genresclickHandle = (e) => {
-  // Get the genre ID from the data-attribute, convert it to a number
-  // const genreId = parseInt(e.target.dataset.id);
-
+  // Check which genre filters are selected
   getSelectedInputs();
-  console.log($selectedGenres);
-
-  // Check if any of the movies have a matching genre ID
-  // allMovies.map((el) => {
-  //   if (e.target.checked && el.genre_ids.includes(genreId) && !visibleItems.includes(el)) {
-  //     // If the input is checked, and the visibleItems array doesn’t already include the item, add them to the array
-  //     visibleItems.push(el);
-  //   } else if (!e.target.checked && el.genre_ids.includes(genreId) && visibleItems.includes(el)) {
-  //     // In the input is not checked, remove items of this genre
-  //     visibleItems.splice(visibleItems.indexOf(el), 1);
-  //   }
-  // });
-  // const allMovieGenreIds = allMovies.map(el => el.genre_ids);
-  // console.log(allMovieGenreIds);
+  // Empty the array
   visibleItems = [];
 
+  // If all selected genres apply to movie, add to the visibleItems array
   allMovies.map((el) => {
-    // $selectedGenres.map((i) => {
-    //   if (el.genre_ids.includes(i)) {
-    //     visibleItems.push(el);
-    //   } else {
-    //     // visibleItems.splice(visibleItems.indexOf(el), 1);
-    //   }
-    // });
-
     const isSelected = i => el.genre_ids.includes(i);
-    console.log($selectedGenres.every(isSelected), el);
+
     if ($selectedGenres.every(isSelected)) {
       visibleItems.push(el);
     }
   });
 
-  console.log(visibleItems);
-
-  // If any filters are selected show those items, otherwise show all movies
-  if (visibleItems.length > 0) {
+  // If any filters are selected populate the page with the filtered items, otherwise show all movies
+  if (itemsChecked) {
     populatePage(visibleItems);
   } else {
     populatePage(allMovies);
@@ -193,6 +185,14 @@ const requestFunction = (url, index) => {
       } else if (index === 1) {
         // for the second item in the array (genresUrl) create filter
         listGenres(dataObject);
+
+        // Find the genres for each listed movie
+        $ratedItems.forEach((el) => {
+          console.log(el.genre_ids);
+          el.genre_ids.forEach((i) => {
+            console.log(dataObject.genres.find(item => item.id === i));
+          });
+        });
       }
     }
   };
