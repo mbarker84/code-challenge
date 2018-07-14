@@ -137,19 +137,24 @@ const genresclickHandle = (e) => {
   //     visibleItems.splice(visibleItems.indexOf(el), 1);
   //   }
   // });
-  const allMovieGenreIds = allMovies.map(el => el.genre_ids);
+  // const allMovieGenreIds = allMovies.map(el => el.genre_ids);
   // console.log(allMovieGenreIds);
 
-  const isSelected = i => $selectedGenres.includes(i);
-
   allMovies.map((el) => {
-    $selectedGenres.map((i) => {
-      if (el.genre_ids.includes(i)) {
-        visibleItems.push(el);
-      } else {
-        // visibleItems.splice(visibleItems.indexOf(el), 1);
-      }
-    });
+    // $selectedGenres.map((i) => {
+    //   if (el.genre_ids.includes(i)) {
+    //     visibleItems.push(el);
+    //   } else {
+    //     // visibleItems.splice(visibleItems.indexOf(el), 1);
+    //   }
+    // });
+    const isSelected = i => el.genre_ids.includes(i);
+    console.log(el.genre_ids);
+    if ($selectedGenres.every(isSelected)) {
+      visibleItems.push(el);
+    } else if (visibleItems.includes(el)) {
+      visibleItems.splice(visibleItems.indexOf(el));
+    }
   });
 
   console.log(visibleItems);
