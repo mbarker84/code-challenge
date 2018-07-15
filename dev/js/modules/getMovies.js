@@ -4,6 +4,7 @@ const $container = document.querySelector('[data-container]');
 const $filterWrapper = document.querySelector('[data-filter]');
 const $ratingInput = document.querySelector('[data-rating]');
 const $currRating = document.querySelector('[data-current-rating]');
+let $listItems;
 const apiKey = 'ef3830b0bf3e47ea40628844dfe93dfb';
 
 // Get the JSON data
@@ -21,6 +22,9 @@ const $selectedGenres = [];
 
 // Create a new variable to which we’ll assign the results of the API query. This will be a list of all available movies.
 let allMovies;
+
+// Create a new variable for array of genres
+let allGenres;
 
 // Get the current value of the rating input
 let currentMinRating;
@@ -94,11 +98,12 @@ const populatePage = (obj) => {
   if ($ratedItems.length > 0) {
     // Loop over the data array and create a list item for each movie as HTML string
     const listItems = $ratedItems
-      .map(el => `<li>
+      .map(el => `<li class="movie-list__item" data-item>
             <h2>${el.title}</h2>
             <p>${el.vote_average}</p>
             <p>${el.popularity}</p>
             <p>${el.overview}</p>
+            <ul data-genre></ul>
           </li>`)
       .join('');
 
@@ -107,6 +112,11 @@ const populatePage = (obj) => {
   } else {
     // If no results match the filter then display a message.
     $container.innerHTML = '<p>Sorry, no results found</p>';
+  }
+
+  // append genres
+  if (allGenres) {
+    appendGenres(allGenres);
   }
 };
 
@@ -159,6 +169,21 @@ const genresclickHandle = (e) => {
   }
 };
 
+// Add genres to displayed movies
+const appendGenres = (obj) => {
+  $listItems = [...document.querySelectorAll('[data-item]')];
+  // Find the genres for each listed movie
+  $ratedItems.map((el, index) => {
+    const movieGenres = el.genre_ids
+      .map(i => `<li>${obj.find(item => item.id === i).name}</li>`)
+      .join('');
+
+    console.log($listItems[index]);
+    const genreWrapper = $listItems[index].querySelector('[data-genre]');
+    genreWrapper.innerHTML = movieGenres;
+  });
+};
+
 // Because our inputs are being created dynamically we have to delegate events to the parent
 $filterWrapper.addEventListener('click', genresclickHandle);
 
@@ -181,18 +206,13 @@ const requestFunction = (url, index) => {
         // get array of available genres and create filter component
         getGenresArray(allMovies);
         // for the first request in the array, populate the page
-        populatePage(dataObject.results);
+        populatePage(allMovies);
       } else if (index === 1) {
         // for the second item in the array (genresUrl) create filter
+        allGenres = dataObject.genres;
         listGenres(dataObject);
-
-        // Find the genres for each listed movie
-        $ratedItems.forEach((el) => {
-          console.log(el.genre_ids);
-          el.genre_ids.forEach((i) => {
-            console.log(dataObject.genres.find(item => item.id === i));
-          });
-        });
+        // Add genres to displayed movies
+        appendGenres(allGenres);
       }
     }
   };
