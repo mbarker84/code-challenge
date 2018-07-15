@@ -14,12 +14,23 @@
   }
 }
 
-.movie-list__header {
-  position: relative;
-}
-
 .movie-list__item {
   p {
     color: $white;
+  }
+}
+
+.movie-list__header {
+  position: relative;
+
+  h3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: rem(10px);
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(black, 0.4), rgba(black, 0));
   }
 }
