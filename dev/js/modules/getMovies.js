@@ -69,6 +69,15 @@ const getGenresArray = (items) => {
   });
 };
 
+// Fade items in
+const fadeIn = () => {
+  $listItems.forEach((el, index) => {
+    setTimeout(() => {
+      el.style.opacity = '1';
+    }, index * 150);
+  });
+};
+
 // Add genres to displayed movies
 const appendGenres = (obj) => {
   $listItems = [...document.querySelectorAll('[data-item]')];
@@ -81,6 +90,8 @@ const appendGenres = (obj) => {
     const genreWrapper = $listItems[index].querySelector('[data-genre]');
     genreWrapper.innerHTML = movieGenres;
   });
+
+  fadeIn();
 };
 
 // Function to populate the page with a list of results of the query
@@ -123,6 +134,14 @@ const populatePage = (obj) => {
     // If no results match the filter then display a message.
     $container.innerHTML = '<p class="movie-list__no-results">Sorry, no results found</p>';
   }
+
+  // // Fade items in
+  // $listItems = [...document.querySelectorAll('[data-item]')];
+  // $listItems.forEach((el, index) => {
+  //   setTimeout(() => {
+  //     el.style.opacity = '1';
+  //   }, index * 200);
+  // });
 
   // append genres
   if (allGenres) {

@@ -35,6 +35,13 @@
       border: 2px solid $white;
     }
   }
+
+  input:hover,
+  input:focus {
+    + label::before {
+      border: 2px solid $white;
+    }
+  }
 }
 
 .filter__rating {
