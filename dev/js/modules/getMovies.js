@@ -45,8 +45,10 @@ const listGenres = (obj) => {
   const filterItems = obj.map((el) => {
     if (genresArray.includes(el.id)) {
       return `<div class="filter__input-group">
-      <input type="checkbox" data-id="${el.id}" name="genre" data-input>
-      <label for="${el.id}">${el.name}</label>
+      <input type="checkbox" id="${el.id}" data-id="${el.id}" name="genre" data-input>
+      <label for="${el.id}">
+        <span>${el.name}</span>
+      </label>
       </div>`;
     }
   });
@@ -103,11 +105,14 @@ const populatePage = (obj) => {
       .map(el => `<li class="movie-list__item" data-item>
             <header class="movie-list__header">
               <h3>${el.title}</h3>
-              <figure>
+              <figure class="movie-list__figure">
                 <img src="https://image.tmdb.org/t/p/w500/${el.poster_path}" alt="${el.title}"/>
               </figure>
             </header>
-            <p>Average rating: <span class="movie-list__rating"></span>${el.vote_average}</span></p>
+            <p class="movie-list__rating">
+              <span>Average rating:</span>
+              <span>${el.vote_average}</span>
+            </p>
             <ul class="movie-list__genres" data-genre></ul>
           </li>`)
       .join('');
@@ -116,7 +121,7 @@ const populatePage = (obj) => {
     $container.innerHTML = `<ul class="movie-list">${listItems}</ul>`;
   } else {
     // If no results match the filter then display a message.
-    $container.innerHTML = '<p class="no-results">Sorry, no results found</p>';
+    $container.innerHTML = '<p class="movie-list__no-results">Sorry, no results found</p>';
   }
 
   // append genres

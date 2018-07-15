@@ -4,11 +4,11 @@
 // ===================================================================
 // Descriptive colors
 // ===================================================================
-$black:                     #000 !default;
+$black:                     #1e1f21 !default;
 $black-light:               lighten(#000, 25%) !default;
 $white:                     #fff !default;
-$white-darken:				darken($white, 35%);
-$red:						red !default;
+$white-darken:				      darken($white, 35%);
+$red:						          #d30647 !default;
 
 // ===================================================================
 // Theme colors
@@ -18,7 +18,7 @@ $color-accent:				      $red !default;
 
 $color-shadow:				      rgba($black, .125);
 
-$bg:                        #1e1f21;
+$dark-grey:                 #2c2f33;
 
 // ===================================================================
 // Main elements colors

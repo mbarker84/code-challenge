@@ -26,7 +26,7 @@ $google-fonts-url:            "https://fonts.googleapis.com/css?family=Exo:300,4
 $scale:                       1.25 !default;
 
 // $base-font-size
-$font-size-base:              18px !default;
+$font-size-base:              20px !default;
 $font-size-medium:            ceil(($font-size-base * $scale)) !default;
 $font-size-large:             ceil(($font-size-base * $scale * 1.5)) !default;
 $font-size-small:             ceil(($font-size-base / $scale)) !default;
@@ -42,7 +42,7 @@ $line-height-count: floor(($font-size-base * $line-height-base)) !default;
 
 // font family
 $font-family-fallback:        'Arial', sans-serif;
-$font-family-open:            'industry', sans-serif, $font-family-fallback;
+$font-family-open:            'proxima-nova', serif, $font-family-fallback;
 $font-family-base:            $font-family-open;
 $font-family-second:          $font-family-open;
 

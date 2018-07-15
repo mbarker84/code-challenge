@@ -1,8 +1,15 @@
 //==============================================
 // Layout/header
-//============================================== 
+//==============================================
 
-.l-header {
-	border-bottom: $b-s-base $white-darken solid;
-	margin-bottom: $margin;
+.header {
+}
+
+.header__page-title {
+  color: $red;
+
+  @media (min-width: breakpoint('md')) {
+    font-size: rem(60px);
+    text-shadow: .1em .1em 30px rgba(black, 0.5);
+  }
 }

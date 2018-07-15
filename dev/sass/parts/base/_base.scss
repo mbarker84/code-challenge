@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  font-size: 1em;
+  font-size: 20px;
   height: 100%;
 }
 
@@ -13,12 +13,26 @@ html {
 }
 
 body {
-  background-color: $black;
+  background: $black;
   color: $white;
-  font: #{$font-size-base}/#{$line-height-base} $font-family-base;
+  // font: #{$font-size-base}/#{$line-height-base} $font-family-base;
+  font-family: 'proxima-nova', Arial, Helvetica, sans-serif;
+  font-weight: 300;
   overflow-x: hidden;
   text-rendering: optimizeLegibility; //The browser emphasizes legibility over rendering speed and geometric precision. This enables kerning and optional ligatures. https://developer.mozilla.org/en-US/docs/Web/CSS/text-rendering
   -webkit-font-smoothing: antialiased; //Make text look good on mac(Tim Van Damme test)
+
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, black, $black);
+    z-index: -1;
+  }
 }
 
 @include H($font-size-base, $scale);
@@ -67,6 +81,25 @@ figure {
 ul {
   list-style: none;
   padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+img {
+  display: block;
+  width: 100%;
 }
 
 
