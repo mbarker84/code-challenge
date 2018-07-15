@@ -7,13 +7,14 @@ html {
 * {
   box-sizing: inherit;
   &:before,
-  &:after { 
+  &:after {
     @extend *;
   }
 }
 
 body {
-  color: $color-text-main;
+  background-color: $black;
+  color: $white;
   font: #{$font-size-base}/#{$line-height-base} $font-family-base;
   overflow-x: hidden;
   text-rendering: optimizeLegibility; //The browser emphasizes legibility over rendering speed and geometric precision. This enables kerning and optional ligatures. https://developer.mozilla.org/en-US/docs/Web/CSS/text-rendering
@@ -54,11 +55,18 @@ b {
   font-weight: 600;
 }
 
-
-
 img {
   height: auto;
   max-width: 100%;
+}
+
+figure {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
 }
 
 

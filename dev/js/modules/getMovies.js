@@ -11,9 +11,6 @@ const apiKey = 'ef3830b0bf3e47ea40628844dfe93dfb';
 const requestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`;
 const genresUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`;
 
-// Create an array of the requests so we can execute them in turn
-const requestsArray = [requestUrl, genresUrl];
-
 // Create new empty array for movie genres [2]
 const genresArray = [];
 
@@ -35,24 +32,21 @@ let visibleItems = [];
 // Variable to test if any items are checked [1]
 let itemsChecked;
 
-// Make array of all available genres available globally
-let $genres;
-
 // Array of dynamically created movie listing <li></li>
 let $listItems;
+
+// Variable to get items by rating
+let $ratedItems;
 
 /* This function gets a list of all genres names and ids from the genres query and cross-references
 it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component. */
 const listGenres = (obj) => {
-  // Assign the array of genre IDs to a variable
-  $genres = obj.genres;
-
   // Map over the array of genres IDs. If the genre ID matches any of the movies returned by the request, create a corresponding <input> to add to the filter component
-  const filterItems = $genres.map((el) => {
+  const filterItems = obj.map((el) => {
     if (genresArray.includes(el.id)) {
       return `<div class="filter__input-group">
       <input type="checkbox" data-id="${el.id}" name="genre" data-input>
-      <label for="${el.id}"></label>${el.name}</label>
+      <label for="${el.id}">${el.name}</label>
       </div>`;
     }
   });
@@ -73,12 +67,22 @@ const getGenresArray = (items) => {
   });
 };
 
-// Variable to get items by rating
-let $ratedItems;
+// Add genres to displayed movies
+const appendGenres = (obj) => {
+  $listItems = [...document.querySelectorAll('[data-item]')];
+  // Find the genres for each listed movie
+  $ratedItems.map((el, index) => {
+    const movieGenres = el.genre_ids
+      .map(i => `<li>${obj.find(item => item.id === i).name}</li>`)
+      .join('');
+
+    const genreWrapper = $listItems[index].querySelector('[data-genre]');
+    genreWrapper.innerHTML = movieGenres;
+  });
+};
 
 // Function to populate the page with a list of results of the query
 const populatePage = (obj) => {
-  console.log(allMovies);
   // Get the current rating input value and show the value
   currentMinRating = parseFloat($ratingInput.value);
   const ratingValue = Number(currentMinRating.toFixed(1));
@@ -87,15 +91,8 @@ const populatePage = (obj) => {
   // Sort by popularity and assign the array of results to a variable
   const $items = obj.sort((a, b) => a.popularity - b.popularity).reverse();
 
-  // Create a new array for items over the current rating value
-  $ratedItems = [];
-
-  // Any items with rating higher than or equal to current rating input value, push into the array
-  $items.map((el) => {
-    if (el.vote_average >= ratingValue) {
-      $ratedItems.push(el);
-    }
-  });
+  // Return an array of items in selected genres with rating higher than or equal to current rating input value
+  $ratedItems = $items.filter(el => el.vote_average >= ratingValue);
 
   // Remove content if the $container has content from a previous query
   $container.innerHTML = '';
@@ -104,20 +101,22 @@ const populatePage = (obj) => {
     // Loop over the data array and create a list item for each movie as HTML string
     const listItems = $ratedItems
       .map(el => `<li class="movie-list__item" data-item>
-            <img src="https://image.tmdb.org/t/p/w500/${el.poster_path}" alt="${el.title}"/>
-            <h2>${el.title}</h2>
-            <p>${el.vote_average}</p>
-            <p>${el.popularity}</p>
-            <p>${el.overview}</p>
-            <ul data-genre></ul>
+            <header class="movie-list__header">
+              <h3>${el.title}</h3>
+              <figure>
+                <img src="https://image.tmdb.org/t/p/w500/${el.poster_path}" alt="${el.title}"/>
+              </figure>
+            </header>
+            <p>Average rating: <span class="movie-list__rating"></span>${el.vote_average}</span></p>
+            <ul class="movie-list__genres" data-genre></ul>
           </li>`)
       .join('');
 
     // Create a new <ul></ul> and insert the items HTML
-    $container.innerHTML = `<ul>${listItems}</ul>`;
+    $container.innerHTML = `<ul class="movie-list">${listItems}</ul>`;
   } else {
     // If no results match the filter then display a message.
-    $container.innerHTML = '<p>Sorry, no results found</p>';
+    $container.innerHTML = '<p class="no-results">Sorry, no results found</p>';
   }
 
   // append genres
@@ -134,6 +133,7 @@ const getSelectedInputs = () => {
   itemsChecked = false;
 
   inputsArray.map((el) => {
+    // Get the genre ID for each input, convert to a number
     const genreId = parseInt(el.dataset.id);
 
     // [1] If any input is checked, set to true
@@ -175,28 +175,12 @@ const clickHandle = (e) => {
   }
 };
 
-// Add genres to displayed movies
-const appendGenres = (obj) => {
-  $listItems = [...document.querySelectorAll('[data-item]')];
-  // Find the genres for each listed movie
-  $ratedItems.map((el, index) => {
-    const movieGenres = el.genre_ids
-      .map(i => `<li>${obj.find(item => item.id === i).name}</li>`)
-      .join('');
-
-    console.log($listItems[index]);
-    const genreWrapper = $listItems[index].querySelector('[data-genre]');
-    genreWrapper.innerHTML = movieGenres;
-  });
-};
-
 // ADD EVENTS:
 // Because our inputs are being created dynamically we have to delegate events to the parent
 $filterWrapper.addEventListener('click', clickHandle);
 $ratingInput.addEventListener('change', clickHandle);
 
-// The function we want to perform on each item in the requestsArray
-const requestFunction = (url, index) => {
+const getAllMovies = (url, callback) => {
   // New request
   const request = new XMLHttpRequest();
 
@@ -209,25 +193,41 @@ const requestFunction = (url, index) => {
     if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
       const dataObject = request.response;
 
-      if (index === 0) {
-        allMovies = dataObject.results;
-        // get array of available genres and create filter component
-        getGenresArray(allMovies);
-        // for the first request in the array, populate the page
-        populatePage(allMovies);
-      } else if (index === 1) {
-        // for the second item in the array (genresUrl) create filter
-        allGenres = dataObject.genres;
-        listGenres(dataObject);
-        // Add genres to displayed movies
-        appendGenres(allGenres);
-      }
+      allMovies = dataObject.results;
+      // get array of available genres and create filter component
+      getGenresArray(allMovies);
+      // for the first request in the array, populate the page
+      populatePage(allMovies);
     }
   };
   request.send();
+  callback(genresUrl);
 };
 
-// Loop over the array, execute function
-requestsArray.forEach((item, index) => {
-  requestFunction(item, index);
-});
+// Function to be passed in as a callback, so it executes after our first request
+const getAllGenres = (url) => {
+  // New request
+  const genreRequest = new XMLHttpRequest();
+
+  // Convert the JSON into a JS object
+  genreRequest.open('GET', url);
+  genreRequest.responseType = 'json';
+
+  genreRequest.onreadystatechange = () => {
+    // Wait for the request to respond, then do stuff if request returns without errors
+    if (genreRequest.readyState === XMLHttpRequest.DONE && genreRequest.status === 200) {
+      const dataObject = genreRequest.response;
+      // for the second item in the array (genresUrl) create filter
+      allGenres = dataObject.genres;
+      listGenres(allGenres);
+      // Add genres to displayed movies
+      appendGenres(allGenres);
+    } else {
+      console.log('error occurred');
+    }
+  };
+  genreRequest.send();
+};
+
+// Run the first request function, passing the second in as a callback
+getAllMovies(requestUrl, getAllGenres);

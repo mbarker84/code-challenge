@@ -1,0 +1,25 @@
+.movie-list {
+  @media (min-width: breakpoint('md')) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: rem(40px);
+  }
+
+  @media (min-width: breakpoint('lg')) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: breakpoint('xl')) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.movie-list__header {
+  position: relative;
+}
+
+.movie-list__item {
+  p {
+    color: $white;
+  }
+}

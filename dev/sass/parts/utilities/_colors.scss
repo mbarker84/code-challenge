@@ -14,9 +14,11 @@ $red:						red !default;
 // Theme colors
 // ===================================================================
 $color-primary:             $black !default;
-$color-accent:				$red !default;
+$color-accent:				      $red !default;
 
-$color-shadow:				rgba($black, .125);
+$color-shadow:				      rgba($black, .125);
+
+$bg:                        #1e1f21;
 
 // ===================================================================
 // Main elements colors

@@ -153,7 +153,7 @@
 //  MEDIA QUERIES.
 //
 // @returns - expression value of $breakpoints or $mq or custom
-// @source - webman.pro 
+// @source - webman.pro
 //
 // Parse expression
 @function -w-parse-expression($expr) {
@@ -188,7 +188,7 @@
     @if ( ($operator == ">") and ($equally != "=") ){
       $result: "(min-width: #{$result})";
     }@elseif ( ($operator == "<") and ($equally != "=") ){
-      $result: "(max-width: #{$result - 1})";   
+      $result: "(max-width: #{$result - 1})";
     }@elseif( ($operator == "<") and ($equally == "=") ) {
       $result: "(max-width: #{$result})";
     }@elseif( ($operator == ">") and ($equally == "=") ) {
@@ -198,7 +198,7 @@
     $result: $result;
   }
 
-  @return $result;  
+  @return $result;
 };
 // 2. Add and to item
 // @returns re
@@ -216,10 +216,49 @@
 //  Border
 //
 // @returns - value of $border
-// @source - webman.pro 
+// @source - webman.pro
 //
 // return border style
 @function -border($color: $white, $size: $b-s-base, $style: "solid") {
   $border: $size + " " + $color + " " + $style;
   @return #{$border};
+}
+
+
+// Imported from https://github.com/ournameismud/mud-fractal/blob/master/src/scss/_system/core/_units.scss
+$current-rootsize: 16px !default;
+
+@function rem-to-px($value, $context: $current-rootsize) {
+	@if unit($value) == 'rem' {
+		$value: strip-units($value) * strip-units($current-rootsize);
+		$value: $value * 1px;
+	}
+	@return $value;
+}
+
+@function rem($value, $context: $current-rootsize, $report: false) {
+	@if $report == true {
+		@debug $value $context;
+	}
+	@if unit($context) == 'rem' {
+		$context: rem-to-px($context);
+	}
+	@if unit($value) == 'px' {
+		$value: strip-units($value) / strip-units($context);
+		$value: $value * 1rem;
+	}
+	@return $value;
+}
+
+@function strip-units($value) {
+	@return $value / ($value * 0 + 1);
+}
+
+/*
+	@function breakpoint
+	@param $break: Name of the breakpoint
+	@return value
+*/
+@function breakpoint($break) {
+	@return map-get($breakpoints, $break);
 }

@@ -85,3 +85,12 @@ $input-color-placeholder:        #999 !default;
 $input-height-base:              ($line-height-count + ($padding-base-vertical * 2) + 2) !default;
 $input-height-large:             (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;
 $input-height-small:             (floor($font-size-small * $line-height-small) + ($padding-small-vertical * 2) + 2) !default;
+
+// Breakpoints
+$breakpoints: (
+	min: 280px,
+  sm: 480px,
+  md: 780px,
+	lg: 900px,
+	xl: 1200px
+) !default;
