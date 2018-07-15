@@ -4,7 +4,7 @@ const $container = document.querySelector('[data-container]');
 const $filterWrapper = document.querySelector('[data-filter]');
 const $ratingInput = document.querySelector('[data-rating]');
 const $currRating = document.querySelector('[data-current-rating]');
-let $listItems;
+
 const apiKey = 'ef3830b0bf3e47ea40628844dfe93dfb';
 
 // Get the JSON data
@@ -38,6 +38,9 @@ let itemsChecked;
 // Make array of all available genres available globally
 let $genres;
 
+// Array of dynamically created movie listing <li></li>
+let $listItems;
+
 /* This function gets a list of all genres names and ids from the genres query and cross-references
 it against the genre IDs in `genresArray` to determine which genre inputs should be available for our filter component. */
 const listGenres = (obj) => {
@@ -70,10 +73,12 @@ const getGenresArray = (items) => {
   });
 };
 
+// Variable to get items by rating
 let $ratedItems;
 
 // Function to populate the page with a list of results of the query
 const populatePage = (obj) => {
+  console.log(allMovies);
   // Get the current rating input value and show the value
   currentMinRating = parseFloat($ratingInput.value);
   const ratingValue = Number(currentMinRating.toFixed(1));
@@ -99,6 +104,7 @@ const populatePage = (obj) => {
     // Loop over the data array and create a list item for each movie as HTML string
     const listItems = $ratedItems
       .map(el => `<li class="movie-list__item" data-item>
+            <img src="https://image.tmdb.org/t/p/w500/${el.poster_path}" alt="${el.title}"/>
             <h2>${el.title}</h2>
             <p>${el.vote_average}</p>
             <p>${el.popularity}</p>
@@ -146,7 +152,7 @@ const getSelectedInputs = () => {
 };
 
 // The clickHandle for filter inputs
-const genresclickHandle = (e) => {
+const clickHandle = (e) => {
   // Check which genre filters are selected
   getSelectedInputs();
   // Empty the array
@@ -184,8 +190,10 @@ const appendGenres = (obj) => {
   });
 };
 
+// ADD EVENTS:
 // Because our inputs are being created dynamically we have to delegate events to the parent
-$filterWrapper.addEventListener('click', genresclickHandle);
+$filterWrapper.addEventListener('click', clickHandle);
+$ratingInput.addEventListener('change', clickHandle);
 
 // The function we want to perform on each item in the requestsArray
 const requestFunction = (url, index) => {
