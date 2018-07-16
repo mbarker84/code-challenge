@@ -149,23 +149,22 @@ const getSelectedInputs = () => {
   // Empty the array
   $selectedGenres = [];
 
+  // Map over the array and to see if any inputs are checked
   inputsArray.map((el) => {
     // Get the genre ID for each input, convert to a number
     const genreId = parseInt(el.dataset.id);
 
-    // [1] If any input is checked, set to true. We’re going to use this in the clickHandle function.
+    /* [1] If any input is checked, set to true. We’re going to use this in the
+    clickHandle function to contol whether we display filtered movies or all movies. */
     if (el.checked) {
       itemsChecked = true;
     }
 
-    /* If an input is checked and $selectedGenres array doesn’t already include it, push it to the array.
-    Otherwise, if not checked remove it from the array if necessary. */
+    /* If an input is checked and $selectedGenres array doesn’t already include it, push it to the array */
     if (el.checked && !$selectedGenres.includes(genreId)) {
       return $selectedGenres.push(genreId);
     }
   });
-
-  console.log($selectedGenres);
 };
 
 // The clickHandle for filter inputs
