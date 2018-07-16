@@ -22,6 +22,11 @@
   max-width: rem(400px);
   opacity: 0;
   transition: opacity 300ms ease;
+  margin-bottom: rem(30px);
+
+  @media (min-width: breakpoint('md')) {
+    margin-bottom: 0;
+  }
 
   p {
     color: $white;
@@ -30,6 +35,11 @@
 
 .movie-list__header {
   position: relative;
+  max-width: rem(250px);
+
+  @media (min-width: breakpoint('md')) {
+    max-width: none;
+  }
 
   h3 {
     position: absolute;

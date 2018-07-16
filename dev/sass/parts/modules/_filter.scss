@@ -47,12 +47,26 @@
 .filter__rating {
   label {
     width: 100%;
-    display: flex;
-    align-items: center;
-    position: relative;
 
-    > *  {
-      margin-right: rem(20px);
+    @media (min-width: breakpoint('md')) {
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      > *  {
+        margin-right: rem(20px);
+      }
+    }
+  }
+
+  input {
+    margin-top: rem(20px);
+    width: 100%;
+
+    @media (min-width: breakpoint('md')) {
+      margin-top: 0;
+      margin-bottom: 0;
+      width: rem(200px);
     }
   }
 }
