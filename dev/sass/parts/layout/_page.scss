@@ -1,0 +1,11 @@
+.container {
+  max-width: rem(1200px);
+  padding-left: rem(20px);
+  padding-right: rem(20px);
+  margin: 0 auto;
+
+  @media (min-width: breakpoint('md')) {
+    padding-left: rem(40px);
+    padding-right: rem(40px);
+  }
+}

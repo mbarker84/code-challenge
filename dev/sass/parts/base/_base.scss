@@ -1,7 +1,11 @@
 html {
   box-sizing: border-box;
-  font-size: 20px;
+  font-size: 18px;
   height: 100%;
+
+  @media (min-width: breakpoint('xl')) {
+    font-size: 20px;
+  }
 }
 
 * {
