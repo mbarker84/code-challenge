@@ -217,10 +217,10 @@ const getAllMovies = (url, callback) => {
       getGenresArray(allMovies);
       // for the first request in the array, populate the page
       populatePage(allMovies);
+      callback(genresUrl);
     }
   };
   request.send();
-  callback(genresUrl);
 };
 
 // Function to be passed in as a callback, so it executes after our first request
