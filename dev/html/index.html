@@ -1,16 +1,20 @@
 @@include('header.html')
-<form class="container">
-  <fieldset class="filter__rating">
-    <label for="ratingInput">
-      <span>Find movies with minimum rating:</span>
-      <span class="filter__current-rating" data-current-rating>3</span>
-      <input type="range" id="ratingInput" min="0" max="10" step="0.5" value="3" data-rating>
-    </label>
-  </fieldset>
-  <fieldset class="filter__genres" data-filter>
-  </fieldset>
-</form>
-
-<div class="container page-content" data-container>
+<div class="container">
+  <form>
+    <fieldset class="filter__rating">
+      <label for="ratingInput">
+        <span>Find movies with minimum rating:</span>
+        <span class="filter__current-rating" data-current-rating>3</span>
+        <input type="range" id="ratingInput" min="0" max="10" step="0.5" value="3" data-rating>
+      </label>
+    </fieldset>
+    <fieldset class="filter__genres" data-filter>
+      <p>If you see this message, the filter component is broken :(</p>
+    </fieldset>
+  </form>
+  <h2 class="page__heading" data-heading>All movies</h2>
+  <div class="page-content" data-container>
+    <p>If you see this message, something isn't right</p>
+  </div>
 </div>
 @@include('footer.html')

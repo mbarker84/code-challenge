@@ -4,6 +4,7 @@ const $container = document.querySelector('[data-container]');
 const $filterWrapper = document.querySelector('[data-filter]');
 const $ratingInput = document.querySelector('[data-rating]');
 const $currRating = document.querySelector('[data-current-rating]');
+const $heading = document.querySelector('[data-heading]');
 
 const apiKey = 'ef3830b0bf3e47ea40628844dfe93dfb';
 
@@ -135,14 +136,6 @@ const populatePage = (obj) => {
     $container.innerHTML = '<p class="movie-list__no-results">Sorry, no results found</p>';
   }
 
-  // // Fade items in
-  // $listItems = [...document.querySelectorAll('[data-item]')];
-  // $listItems.forEach((el, index) => {
-  //   setTimeout(() => {
-  //     el.style.opacity = '1';
-  //   }, index * 200);
-  // });
-
   // append genres
   if (allGenres) {
     appendGenres(allGenres);
@@ -194,8 +187,10 @@ const clickHandle = (e) => {
   // If any filters are selected populate the page with the filtered items, otherwise show all movies
   if (itemsChecked) {
     populatePage(visibleItems);
+    $heading.textContent = 'Selected movies';
   } else {
     populatePage(allMovies);
+    $heading.textContent = 'All movies';
   }
 };
 
@@ -230,10 +225,8 @@ const getAllMovies = (url, callback) => {
 
 // Function to be passed in as a callback, so it executes after our first request
 const getAllGenres = (url) => {
-  // New request
   const genreRequest = new XMLHttpRequest();
 
-  // Convert the JSON into a JS object
   genreRequest.open('GET', url);
   genreRequest.responseType = 'json';
 
@@ -253,5 +246,7 @@ const getAllGenres = (url) => {
   genreRequest.send();
 };
 
-// Run the first request function, passing the second in as a callback
+/* Run the first request function, passing the second in as a callback.
+This isn’t ideal as I’m repeating some code in the two functions, could
+probably be done better with Promises. */
 getAllMovies(requestUrl, getAllGenres);

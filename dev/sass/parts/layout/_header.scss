@@ -7,6 +7,7 @@
 
 .header__page-title {
   color: $red;
+  letter-spacing: -.04em;
 
   @media (min-width: breakpoint('md')) {
     font-size: rem(60px);
