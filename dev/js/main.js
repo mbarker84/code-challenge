@@ -19,7 +19,7 @@ let allGenres;
 const genresArray = [];
 
 // Array for selected genres
-const $selectedGenres = [];
+let $selectedGenres;
 
 // Get the current value of the rating input
 let currentMinRating;
@@ -143,14 +143,17 @@ const getSelectedInputs = () => {
   // Only get this when clicked, as these elements are dynamically created
   const inputsArray = [...document.querySelectorAll('[data-input]')];
 
-  // Set variable to false by default [1]
+  // Set variable to false by default. [1]
   itemsChecked = false;
+
+  // Empty the array
+  $selectedGenres = [];
 
   inputsArray.map((el) => {
     // Get the genre ID for each input, convert to a number
     const genreId = parseInt(el.dataset.id);
 
-    // [1] If any input is checked, set to true
+    // [1] If any input is checked, set to true. We’re going to use this in the clickHandle function.
     if (el.checked) {
       itemsChecked = true;
     }
@@ -159,10 +162,10 @@ const getSelectedInputs = () => {
     Otherwise, if not checked remove it from the array if necessary. */
     if (el.checked && !$selectedGenres.includes(genreId)) {
       return $selectedGenres.push(genreId);
-    } else if (!el.checked && $selectedGenres.includes(genreId)) {
-      $selectedGenres.splice($selectedGenres.indexOf(el), 1);
     }
   });
+
+  console.log($selectedGenres);
 };
 
 // The clickHandle for filter inputs

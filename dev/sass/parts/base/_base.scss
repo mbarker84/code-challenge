@@ -54,8 +54,6 @@ a {
 }
 
 p {
-  color: transparentize($color-text-main, .1);
-  font-weight: 400;
   line-height: $line-height-small;
   margin: 0;
   margin-bottom: $margin;
@@ -69,7 +67,7 @@ small,
 }
 
 strong {
-  font-weight: 800;
+  font-weight: 600;
 }
 b {
   font-weight: 600;

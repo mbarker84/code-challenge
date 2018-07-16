@@ -4,7 +4,7 @@
 
 A movie listings mini-site based on [this code challenge](https://github.com/zone/frontend/blob/master/challenges/movie-listings.md).
 
-View the project live [here](https://infallible-galileo-23baf0.netlify.com/).
+View the project live [here](https://movie-listings-challenge.netlify.com/).
 
 Build set-up and starter files cloned from [gulp-webpack-starter](https://github.com/wwwebman/gulp-webpack-starter).
 
